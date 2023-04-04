@@ -1,10 +1,10 @@
-import {Command, Args} from '@oclif/core'
-import {globby} from 'globby'
 import fs from 'node:fs'
 import stream from 'node:stream'
-import {nanoid} from 'nanoid'
+import { Args, Command } from '@oclif/core'
+import { globby } from 'globby'
+import { nanoid } from 'nanoid'
 import mmmagic from 'mmmagic'
-import AutoDetectDecoderStream  from 'autodetect-decoder-stream'
+import AutoDetectDecoderStream from 'autodetect-decoder-stream'
 
 class CRLF2LFTransform extends stream.Transform {
   _transform(chunk: any, encoding: BufferEncoding, callback: stream.TransformCallback): void {
@@ -30,15 +30,15 @@ export default class DefaultCommand extends Command {
   }
 
   static args = {
-    glob: Args.string({description: 'the glob pattern to be scanned', default: '**/*'}),
+    glob: Args.string({ description: 'the glob pattern to be scanned', default: '**/*' }),
   }
 
   static strict = false
 
   async run(): Promise<void> {
-    const {args} = await this.parse(DefaultCommand)
+    const { args } = await this.parse(DefaultCommand)
 
-    const paths = await globby(args.glob, {gitignore: true})
+    const paths = await globby(args.glob, { gitignore: true })
 
     const getMagicType = (path: string): Promise<{
       mimeType?: string
@@ -46,8 +46,7 @@ export default class DefaultCommand extends Command {
     }> => new Promise((resolve, reject) => {
       const magic = new mmmagic.Magic(mmmagic.MAGIC_MIME_ENCODING | mmmagic.MAGIC_MIME_TYPE)
       magic.detectFile(path, (err, result) => {
-        if (err)
-          reject(err)
+        if (err) { reject(err) }
         else if (typeof result === 'string') {
           const results = result.split('; charset=')
           this.log(path, result)
@@ -55,15 +54,15 @@ export default class DefaultCommand extends Command {
             mimeType: results[0],
             encoding: results[1],
           })
-        } else
-          resolve({})
+        }
+        else { resolve({}) }
       })
     })
 
-    await Promise.all(paths.map(async path => {
+    await Promise.all(paths.map(async (path) => {
       const stats = await fs.promises.stat(path)
       if (stats.isFile()) {
-        const {mimeType, encoding} = await getMagicType(path)
+        const { mimeType, encoding } = await getMagicType(path)
         if (typeof mimeType === 'string' && mimeType.startsWith('text/') && typeof encoding === 'string') {
           const outputPath = `${path}.${nanoid(4)}`
           // https://nodejs.org/zh-cn/docs/guides/backpressuring-in-streams

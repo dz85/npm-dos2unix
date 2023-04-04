@@ -10,7 +10,7 @@
     "importHelpers": true,
     "outDir": "dist",
     "rootDir": "src",
-    "strict": true,
+    "strict": true
   },
   "include": [
     "src/**/*"

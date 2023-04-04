@@ -1,14 +1,15 @@
+import buffer from 'node:buffer'
 import fs from 'node:fs'
 import stream from 'node:stream'
 import { Args, Command } from '@oclif/core'
 import { globby } from 'globby'
 import { nanoid } from 'nanoid'
-import mmmagic from 'mmmagic'
+import { WASMagic } from 'wasmagic'
 import AutoDetectDecoderStream from 'autodetect-decoder-stream'
 
 class CRLF2LFTransform extends stream.Transform {
   _transform(chunk: any, encoding: BufferEncoding, callback: stream.TransformCallback): void {
-    if (!Buffer.isBuffer(chunk))
+    if (!buffer.Buffer.isBuffer(chunk))
       return callback(new Error('CRLF2LFTransform needs buffers as its input.'))
 
     this.push(chunk.toString().replace(/\r\n/g, '\n'))
@@ -40,41 +41,32 @@ export default class DefaultCommand extends Command {
 
     const paths = await globby(args.glob, { gitignore: true })
 
-    const getMagicType = (path: string): Promise<{
-      mimeType?: string
-      encoding?: string
-    }> => new Promise((resolve, reject) => {
-      const magic = new mmmagic.Magic(mmmagic.MAGIC_MIME_ENCODING | mmmagic.MAGIC_MIME_TYPE)
-      magic.detectFile(path, (err, result) => {
-        if (err) { reject(err) }
-        else if (typeof result === 'string') {
-          const results = result.split('; charset=')
-          this.log(path, result)
-          resolve({
-            mimeType: results[0],
-            encoding: results[1],
-          })
-        }
-        else { resolve({}) }
-      })
-    })
+    const getMagicType = async (path: string): Promise<string> => {
+      const magic = await WASMagic.create()
+      const buf = await fs.promises.readFile(path)
+      return magic.getMime(buf)
+    }
+
+    const transformAndSave = async (path: string): Promise<void> => {
+      const outputPath = `${path}.${nanoid(4)}`
+      // https://nodejs.org/zh-cn/docs/guides/backpressuring-in-streams
+      const input = fs.createReadStream(path)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const encodingTranslate = (new AutoDetectDecoderStream()) as stream.Transform
+      const lfTranslate = new CRLF2LFTransform()
+      const output = fs.createWriteStream(outputPath)
+      await stream.promises.pipeline([input, encodingTranslate, lfTranslate, output])
+      await fs.promises.unlink(path)
+      await fs.promises.rename(outputPath, path)
+      this.log(`${path} 转化完成`)
+    }
 
     await Promise.all(paths.map(async (path) => {
       const stats = await fs.promises.stat(path)
       if (stats.isFile()) {
-        const { mimeType, encoding } = await getMagicType(path)
-        if (typeof mimeType === 'string' && mimeType.startsWith('text/') && typeof encoding === 'string') {
-          const outputPath = `${path}.${nanoid(4)}`
-          // https://nodejs.org/zh-cn/docs/guides/backpressuring-in-streams
-          const input = fs.createReadStream(path)
-          const encodingTranslate = new AutoDetectDecoderStream()
-          const lfTranslate = new CRLF2LFTransform()
-          const output = fs.createWriteStream(outputPath)
-          await stream.promises.pipeline([input, encodingTranslate, lfTranslate, output])
-          await fs.promises.unlink(path)
-          await fs.promises.rename(outputPath, path)
-          this.log(`${path} 转化完成`)
-        }
+        const mimeType = await getMagicType(path)
+        if (typeof mimeType === 'string' && mimeType.startsWith('text/'))
+          await transformAndSave(path)
       }
     }))
   }

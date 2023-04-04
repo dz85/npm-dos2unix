@@ -16,11 +16,11 @@ oclif example Hello World CLI
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g dos2unix
+$ npm install -g dos2unix.js
 $ dos2unix COMMAND
 running command...
 $ dos2unix (--version)
-dos2unix/0.0.1 darwin-arm64 node-v18.14.1
+dos2unix.js/0.0.1 darwin-arm64 node-v18.14.1
 $ dos2unix --help [COMMAND]
 USAGE
   $ dos2unix COMMAND
@@ -56,7 +56,7 @@ EXAMPLES
   $ dos2unix **/*.js
 ```
 
-_See code: [dist/index.ts](https://github.com/dz85/dos2unix/blob/v0.0.1/dist/index.ts)_
+_See code: [dist/index.ts](https://github.com/dz85/npm-dos2unix/blob/v0.0.1/dist/index.ts)_
 
 ## `dos2unix help [COMMANDS]`
 

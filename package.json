@@ -1,5 +1,5 @@
 {
-  "name": "dos2unix",
+  "name": "dos2unix.js",
   "version": "0.0.1",
   "description": "A dos2UniX-like command-line tool written in Nodejs",
   "author": "David Z.",
@@ -10,7 +10,7 @@
   "homepage": "https://github.com/dz85/npm-dos2unix",
   "license": "MIT",
   "main": "dist/index.js",
-  "repository": "dz85/dos2unix",
+  "repository": "dz85/npm-dos2unix",
   "files": [
     "/bin",
     "/dist",

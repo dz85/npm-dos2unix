@@ -1,6 +1,6 @@
 {
   "name": "dos2unix.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A dos2UniX-like command-line tool written in Nodejs",
   "author": "David Z.",
   "type": "module",

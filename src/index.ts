@@ -56,9 +56,12 @@ export default class DefaultCommand extends Command {
       const lfTranslate = new CRLF2LFTransform()
       const output = fs.createWriteStream(outputPath)
       await stream.promises.pipeline([input, encodingTranslate, lfTranslate, output])
-      await fs.promises.unlink(path)
+      /**
+       * linux下的rename是原子操作
+       * @see https://man7.org/linux/man-pages/man2/rename.2.html#:~:text=will%20be%20atomically-,replaced,-%2C%20so%0A%20%20%20%20%20%20%20that%20there
+       */
       await fs.promises.rename(outputPath, path)
-      this.log(`${path} 转化完成`)
+      // this.log(`${path} 转化完成`)
     }
 
     await Promise.all(paths.map(async (path) => {

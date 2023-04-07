@@ -5,17 +5,30 @@
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
-    "declaration": true,
     "importHelpers": true,
-    "outDir": "dist",
-    "rootDir": "src",
-    "strict": true
+
+    "strict": true,
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitAny": true,
+
+    "noEmitOnError": true,
+    "sourceMap": false,
+    "skipLibCheck": true,
+
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "ts-node": {
-    "esm": true
-  }
+  "include": ["./src/**/*"]
 }

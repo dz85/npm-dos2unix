@@ -9,64 +9,39 @@
   "repository": "dz85/npm-dos2unix",
   "bugs": "https://github.com/dz85/npm-dos2unix/issues",
   "keywords": [
-    "oclif"
+    "dos2unix"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "bin": {
     "dos2unix": "./bin/run.js"
   },
   "files": [
     "/bin",
     "/dist",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
+    "/npm-shrinkwrap.json"
   ],
   "engines": {
     "node": ">=12.0.0"
   },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
+    "watch": "tsc -w",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "postpack": "shx rm -f oclif.manifest.json",
-    "posttest": "npm run lint",
-    "prepack": "npm run build && oclif manifest && oclif readme",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "prepack": "npm run build"
   },
   "dependencies": {
-    "@oclif/core": "^2",
-    "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.4.3",
     "autodetect-decoder-stream": "^2.0.2",
+    "commander": "^10.0.0",
     "globby": "^13.1.3",
     "nanoid": "^4.0.2",
     "wasmagic": "^0.0.28"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",
-    "@oclif/test": "^2.3.13",
-    "@types/chai": "^4",
-    "@types/mocha": "^9.0.0",
-    "@types/node": "^16.18.23",
-    "chai": "^4",
+    "@types/node": "^18.15.11",
     "eslint": "^8.37.0",
-    "mocha": "^9",
-    "oclif": "^3",
     "shx": "^0.3.3",
-    "ts-node": "^10.9.1",
     "tslib": "^2.5.0",
-    "typescript": "^4.9.5"
-  },
-  "oclif": {
-    "bin": "dos2unix",
-    "dirname": "dos2unix",
-    "default": ".",
-    "commands": "./dist",
-    "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
-    ]
+    "typescript": "^5.0.3"
   }
 }

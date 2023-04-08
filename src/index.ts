@@ -1,4 +1,5 @@
 import buffer from 'node:buffer'
+import { createRequire } from 'node:module'
 import fs from 'node:fs'
 import stream from 'node:stream'
 import { program } from 'commander'
@@ -6,6 +7,12 @@ import { globby } from 'globby'
 import { nanoid } from 'nanoid'
 import { WASMagic } from 'wasmagic'
 import AutoDetectDecoderStream from 'autodetect-decoder-stream'
+
+const pkg = ((createRequire(import.meta.url))('../package.json')) as {
+  name: string
+  description: string
+  version: string
+}
 
 class CRLF2LFTransform extends stream.Transform {
   _transform(chunk: any, encoding: BufferEncoding, callback: stream.TransformCallback): void {
@@ -19,9 +26,9 @@ class CRLF2LFTransform extends stream.Transform {
 
 function main() {
   program
-    .name('dos2unix.js')
-    .description('A dos2UniX-like command-line tool written in Nodejs')
-    .version('0.0.4')
+    .name(pkg.name)
+    .description(pkg.description)
+    .version(pkg.version)
     .argument('[glob]', 'the glob pattern to be scanned', '**/*')
     .action(async (glob) => {
       const paths = await globby(glob as string, { gitignore: true })

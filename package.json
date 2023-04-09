@@ -29,6 +29,11 @@
     "lint:fix": "eslint . --fix",
     "prepack": "npm run build"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "dependencies": {
     "autodetect-decoder-stream": "^2.0.2",
     "commander": "^10.0.0",
@@ -39,6 +44,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",
     "@types/node": "^18.15.11",
+    "commitizen": "^4.3.0",
     "eslint": "^8.37.0",
     "shx": "^0.3.3",
     "tslib": "^2.5.0",

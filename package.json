@@ -12,7 +12,7 @@
     "dos2unix"
   ],
   "bin": {
-    "dos2unix": "./bin/run.js"
+    "dos2unix.js": "./bin/run.js"
   },
   "files": [
     "/bin",

@@ -54,6 +54,9 @@ function main() {
         const lfTranslate = new CRLF2LFTransform()
         const output = fs.createWriteStream(outputPath)
         await stream.promises.pipeline([input, encodingTranslate, lfTranslate, output])
+        const { mode, uid, gid } = await fs.promises.stat(path)
+        await fs.promises.chmod(path, mode)
+        await fs.promises.chown(path, uid, gid)
         /**
        * linux 下的 rename 是原子操作，这在官方资料很清晰指出
        * @see https://man7.org/linux/man-pages/man2/rename.2.html#:~:text=will%20be%20atomically-,replaced,-%2C%20so%0A%20%20%20%20%20%20%20that%20there

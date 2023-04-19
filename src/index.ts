@@ -29,7 +29,7 @@ function main() {
     .name(pkg.name)
     .description(pkg.description)
     .version(pkg.version)
-    .argument('[glob]', 'the glob pattern to be scanned', '**/*')
+    .argument('[glob]', 'the glob pattern to be scanned', '**/{.*,*}')
     .action(async (glob) => {
       /**
        * `globby`基于`fast-glob`，和`lint-staged`一样，都使用`micromatch`来处理`glob`模式匹配；
